@@ -9,4 +9,4 @@
    * Add your name to the `Contributors.md` file
 5. Push changes to your fork on GitHub
 6. Go to your repository on GitHub and click the `Compare & Pull Request` button
-7. Request that your change be merged.
+7. Fill in the detail and click the `Create Pull Request` button to request that your changes be merged.
