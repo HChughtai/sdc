@@ -7,6 +7,7 @@ The software development community is an opinionated effort to encourage best pr
     ├── project                   # Example project
     ├── sessions                  # Session notes
     ├── CONTRIBUTING.md           # How to contribute to the repo  
+    ├── Contributors.md           # List of people contributing to the repo
     └── README.md                 # This file
 
 ## Meetings
