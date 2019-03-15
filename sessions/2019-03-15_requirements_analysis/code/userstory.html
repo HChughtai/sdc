@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ <link rel="stylesheet" 
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous"> 
+
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+ 
+<style>
+  .usersort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
+  
+  .form-control {
+  padding-right: 30px;
+}
+
+.form-control + .glyphicon {
+  position: absolute;
+  right: 0;
+  padding: 8px 27px;
+}
+
+.glyphicon-remove{
+  position: absolute;
+  right: 0;
+  padding: 8px 5px;
+}
+
+.form-group {
+margin-top:30px
+}
+
+ #user {background-color:#CCFFCC}
+
+</style>
+
+<script>
+
+function addlisteners(){
+
+	$(".usersort").sortable({
+      connectWith: ".usersort",
+	  stop: function(event, ui) {
+	  ui.item.attr("placeholder", "droppped");
+      var myli = ui.item;
+	  var myinput = $(myli).find( "input" );
+	  var litype = $(myli).parent().parent().attr("id");
+	  $(myinput).attr( "placeholder", litype + " will..." );
+    }
+	  
+	  
+    });
+    $(".usersort").disableSelection();
+	$(".glyphicon-remove").click(function () {
+		$(this).parent().parent().remove();
+		
+	});
+
+
+}
+
+
+function addli(category, text) 
+{
+newli = document.createElement("li");
+$(newli).attr("class", "useritem");
+
+newgroupdiv = document.createElement("div");
+newspan = document.createElement("span");
+newremovespan = document.createElement("span");
+
+$(newgroupdiv).attr('class', 'input-group');
+$(newspan).attr('class', 'glyphicon glyphicon-sort');
+$(newremovespan).attr('class', 'glyphicon glyphicon-remove');
+
+newinput = document.createElement("input");
+$(newinput).attr('type', 'text');
+$(newinput).attr('class', 'form-control ' + category);
+$(newinput).attr('placeholder', category + ' will...');
+$(newinput).val(text);
+$(newgroupdiv).append(newinput);
+$(newgroupdiv).append(newspan);
+$(newgroupdiv).append(newremovespan);
+$(newli).append(newgroupdiv);
+
+$("#"+category + "sortable").append(newli);
+addlisteners();
+}
+
+function savejson(){
+
+jsonObj = [];
+
+$(".form-control").each(function( index, element ){ 
+
+	var type = $(this).parent().parent().parent().parent().attr('id');
+	item = {}
+	item ["id"] = index;
+    item ["type"] = type;
+    item ["value"] = $(this).val();
+	jsonObj.push(item);
+	
+})
+
+	var text = JSON.stringify(jsonObj);
+	download("testfile.txt", text);
+console.log(jsonObj);
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
+function loadFileAsText(){
+  var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+  var fileReader = new FileReader();
+  fileReader.onload = function(fileLoadedEvent){
+      var textFromFileLoaded = fileLoadedEvent.target.result;
+      processJSONuserstory(textFromFileLoaded);
+  };
+
+  fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+function processJSONuserstory(texttoprocess){
+
+	$(".useritem").remove();
+	userJSON = JSON.parse(texttoprocess);
+	
+	for (x in userJSON) {
+	
+ if (x == 0) {
+  $("#projecttitle").val(userJSON[x]["value"]);
+ }
+ else {
+   
+  type = userJSON[x]["type"];
+  value = userJSON[x]["value"];
+  addli(type, value);
+  }
+} 
+
+
+}
+
+
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="row justify-content-md-center">
+
+<h1>User Story Form</h1>
+
+
+
+<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+<table class="table">
+<tr>
+    <td>Select an existing User Story json file to load:</td>
+    <td><input type="file" id="fileToLoad"></td>
+</tr>
+
+</table>
+<div style="float:right">
+<input  type="button" class="btn-info" onclick="loadFileAsText()" value="Load Selected File"/>
+</div>
+<div style="clear:both"></div>
+
+<div class="form-group" style="margin-top:30px; margin-bottom:30px">
+
+<div class="input-group"><label for="projecttitle">Project: </label><input class="form-control" id="projecttitle" type="text" placeholder="project title goes here..."/></div
+</div>
+
+<div class="form-group" id="user">
+
+    <label for="usersortable">User story</label>
+	<ul class="usersort" id="usersortable">
+    <li class="useritem"><div class="input-group"><input type="text" class="form-control user"  placeholder="user will..."><span class="glyphicon glyphicon-sort"></span><span class="glyphicon glyphicon-remove"></span></div></li>
+	<li class="useritem"><div class="input-group"><input type="text" class="form-control user"  placeholder="user will..."><span class="glyphicon glyphicon-sort"></span><span class="glyphicon glyphicon-remove"></span></div></li>
+	
+	</ul>
+</div>
+
+	<input type="button" value="Add User Step" class="btn-primary" onclick="addli('user')"/>
+
+ 
+ <div class="form=group" >
+ <div style="float:right">
+<input type="button" class="btn-success" value="Save Form" onclick="savejson()"/>
+</div>
+</div>
+ 
+ 
+</main> 
+</div>
+
+
+  </div>
+
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+
+$(document).ready(function() {
+    console.log( "ready!" );    
+	addlisteners();
+	
+
+});
+	
+
+</script>
+
+</body>
+</html>
