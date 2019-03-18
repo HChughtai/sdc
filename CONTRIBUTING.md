@@ -1,6 +1,6 @@
 # Contributing
 
-## How to do submit your first contribution
+## How to submit your first contribution
 
 1. Fork this repository to create a copy of this repository in your account
 2. Clone the forked repository to your local machine
