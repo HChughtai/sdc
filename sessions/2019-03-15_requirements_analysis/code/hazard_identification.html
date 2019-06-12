@@ -16,18 +16,27 @@ crossorigin="anonymous">
   .reqsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
   .hazsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:10px; }
   .mitsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:10px; }
+  
   .form-control {
   padding-right: 30px;
 }
-
-.form-group, .haz {
-	margin-left:20px;
+.form-group.haz {
 	
+	margin-left:20px;		
 }
 
-.form-group, .mit {
+.hazitem {
+	padding:10px;
+	margin-bottom:5px;
+}
+
+.mititem {
+	padding:10px;
+	margin-bottom:5px;
+}
+
+.form-group.mit {
 	margin-left:20px;
-	
 }
 
 .form-control + .glyphicon {
@@ -62,8 +71,10 @@ margin-top:10px
 }
 
  .reqitem {background-color:#CCFFCC}
+ 
  .hazitem {background-color:#CCCCFF}
- .mititem {background-color:#FFCC99}
+ 
+ .mititem {background-color:#FFCCCC}
  #would {background-color:#FFCCCC} 
  
 </style>
@@ -94,12 +105,12 @@ function addlisteners(){
 		addcomponent("haz", $(this).parent().parent().attr("id"));
 	});
 	
-	$(".req").off().on("click", function () {
+	$(".btn-primary.req").off().on("click", function () {
 	    alert($(this).parent().attr("id"));
 		addcomponent('haz', 'new hazard', $(this).parent().attr("id"));
 	});
 	
-	$(".haz").off().on("click", function () {
+	$(".btn-primary.haz").off().on("click", function () {
 	    alert($(this).parent().attr("id"));
 		addcomponent('mit', 'new mitigation', $(this).parent().attr("id"));
 	});
@@ -125,14 +136,14 @@ function addcomponent(category, text, id)
 	switch(category) {
 		case "haz":
 			newliclass = "hazitem";
-			newcomponent = buildli(id, category, text, true, true, 'Add Mitigation', 'mit');
-			$("#" + id+ "_haz_sortable").append(newcomponent);
+			newcomponent = buildli(id, category, text, true, true, 'Add Mitigation', 'mit', true, "Mitigations");
+			$("#" + id + "_" + category + "_sortable").append(newcomponent);
 			// code block
 			break;
 		case "mit":
 			newliclass = "mititem";
 			newcomponent = buildli(id, category, text, true, false);
-			$("#" + id).append(newcomponent);
+			$("#" + id + "_" + category + "_sortable").append(newcomponent);
 			// code block
 			break;
 		case "req":
@@ -141,9 +152,9 @@ function addcomponent(category, text, id)
 			newcomponentid = $(newcomponent).attr("id");
 			newhazponent = buildli(newcomponentid, "haz", "New Hazard", true, true, 'Add Mitigation', 'mit', true, "Mitigations");
 			newhazponentid = $(newhazponent).attr("id");
-			newmitponent = buildli(newhazponentid, "mit", "New Mitigation", true, false); 
-			$(newhazponent).find(".mit").append(newmitponent);
-			$(newcomponent).find(".haz").append(newhazponent);
+			//newmitponent = buildli(newhazponentid, "mit", "New Mitigation", true, false, "", "", true, ""); 
+			//$(newhazponent).find(".mit").append(newmitponent);
+			$(newcomponent).find(".hazsort").append(newhazponent);
 			$("#"+category + "sortable").append(newcomponent);
 			
 		default:
@@ -157,13 +168,27 @@ function addcomponent(category, text, id)
 
 function buildli(id, category, text, adddropdown, addbutton, buttontext, childcategory, addsublist, sublistname)
 {
-
-	console.log($("#"+id).children("."+childcategory).length); 
-
-
+	console.log(id);
+	mitigationno = $(".mititem").length; 
+	hazardno = $(".hazitem").length; 
+	console.log("mitigation no = " + mitigationno);
+	console.log("hazard no = " + hazardno);
+	countno = 0;
+	childcountno = 0;
+	if (category == "haz") {
+		countno = hazardno;
+		childcountno = mitigationno;
+		}
+	else if (category == "mit") {
+		countno = mitigationno;
+		}
+	else if (category == "req") {
+		childcountno = hazardno;
+		}
+	
 	newli = document.createElement("li");
 	newliclass = category + "item";
-	newliid = "id_" + category + "_" + id;
+	newliid = "id_" + category + "_" + id + "_" + countno.toString();
 	$(newli).attr("id", newliid);
 	$(newli).attr("class", newliclass);
 
@@ -225,7 +250,7 @@ function buildli(id, category, text, adddropdown, addbutton, buttontext, childca
 		subdivlist = document.createElement("ul");
 		subdivlistid = newliid + "_" + childcategory + "_sortable";
 		$(subdivlist).attr("id", subdivlistid);
-		$(subdivlist).attr("class", childcategory + "sort");
+		$(subdivlist).attr("class", childcategory + "sort " + childcategory);
 				
 		subdivlistlabel = document.createElement("label");
 		$(subdivlistlabel).attr("for", subdivlistlabel);
@@ -446,7 +471,8 @@ function processJSONmoscow(texttoprocess){
 
     <label for="reqsortable">Requirements</label>
 	<ul class="reqsort" id="reqsortable">
-    <li class="reqitem" id="req_0">
+    <li class="page-item" id="req_0">
+	
 	<div class="input-group">
 		<input type="text" class="form-control req"  readonly">
 	</div>
