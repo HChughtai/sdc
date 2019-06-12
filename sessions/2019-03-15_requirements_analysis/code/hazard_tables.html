@@ -1,0 +1,323 @@
+ 
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ <link rel="stylesheet" 
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous"> 
+
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+ 
+<style>
+ 
+ .table {}
+ 
+ .table-condensed{
+  font-size: 11px;
+}
+
+tr.noBorder {
+
+margin-top:10px;
+border-right-style: hidden;
+border-left-style: hidden;
+border-top-style: hidden
+
+}
+
+tr.noBorder th {
+  border: 0;
+  font-size: 18px;
+  font-style: bold;
+  
+}
+
+tr.breaker {
+
+border-right-style: hidden;
+border-left-style: hidden;
+border-bottom-style: hidder;
+
+}
+
+tr.breaker td {
+height:30px;
+}
+
+td.green {
+
+background-color: #007E33;
+color: white;
+font-size:12px;
+
+}
+
+td.yellow {
+
+background-color: #ffff00;
+color: black;
+font-size:12px;
+
+}
+
+td.amber {
+
+background-color: #FF8800;
+color: white;
+font-size:12px;
+
+}
+
+td.red {
+
+background-color: #CC0000;
+color: white;
+font-size:12px;
+
+}
+
+th {
+
+font-size: 12px;
+font-style: bold;
+
+}
+
+.font-md {
+
+font-size:12px;
+
+}
+
+.cons_dets {
+
+background-color: #CCFFCC;
+
+}
+
+.risk_dets {
+
+background-color: #B6DDE8;
+
+}
+ 
+ </style>
+ 
+ <script>
+ 
+ </script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="row justify-content-md-center">
+
+<main role="main">
+<table class="table table-bordered table-condensed">
+ <tr class="breaker"><td colspan=6> </td></tr>
+  <tr class="noBorder">
+  <th colspan=6>Hazard Form</th>
+ </tr>
+ <tr class="cons_dets">
+  <th>Severity</th>
+  <th>Negligible – 1</th>
+  <th >Minor – 2</th>
+  <th>Moderate – 3</th>
+  <th>Major – 4</th>
+  <th >Catastrophic – 5</th>
+ </tr>
+ <tr class="cons_dets">
+  <td></td>
+  <td>No obvious harm.<br> Minimal patient harm.</td>
+  <td>Minor injury / illness, 1-3
+  people;<br>
+    Minor harm or illness, requiring minor intervention;8 days extra stay.<br>
+    </td>
+  <td>Minor injury/illness 4+
+  people;16 days extra stay;<br>
+    Moderate harm requiring professional intervention or impacts on a small
+  number of persons; <br>
+    Temporary harm / extra treatment;15 people; <br>
+    Extra level of care;8 days. <br>
+    </td>
+  <td>Major harm leading to
+  incapacity / disability / mismanagement of patient care with longer-term
+  effects; <br>15 days extra stay.<br>Temporary harm/extra treatment;15 people;<br>
+    Major permanent harm / major intervention;50 people.</td>
+  <td>Incident leading to
+  significant harm or death / multiple injuries or irreversible health
+  effects;<br>
+    Major permanent harm / major intervention &gt;50 people.</td>
+ </tr>
+ <tr class="cons_dets">
+ <td></td>
+  <td>e.g.:
+  Incorrect medication dispensed but not taken;resulting in a
+  bruise/graze;Delay in routine
+  transport for patient</td>
+  <td>e.g. Wrong drug or dosage
+  administered, with no adverse effects;Self-harm resulting in minor injuries; Grade 1 pressure ulcer;
+  laceration; sprain; anxiety requiring occupational health counselling<br>
+    </td>
+  <td>e.g. Wrong drug or dosage
+  administered with potential adverse effects; Grade 2/3 pressure ulcer;
+  Healthcare-associated infection (HCAI); Incorrect or inadequate information
+  /communication on transfer of care;</td>
+  <td>e.g. Wrong drug or dosage
+  administered with adverse effects; Grade 4 pressure ulcer; Long-term
+  HCAI;Haemolytic transfusion reaction;
+  Loss of a limb; Post-traumatic stress disorder; Failure to follow up and
+  administer vaccine to baby born to a mother with hepatitis B</td>
+  <td>e.g. Unexpected death;
+  Suicide of a patient known to the service in the past 12 months;Large-scale cervical screening errors;
+  Removal of wrong body part leading to permanent harm; Incident leading to
+  paralysis; Incident leading to long-term mental health problem; Rape/serious
+  assault.</td>
+ </tr>
+ <tr class="risk_dets">
+  <th>Likelihood</th>
+  <th>Rare – 1</th>
+  <th>Unlikely – 2</th>
+  <th>Possible - 3</th>
+  <th>Likely – 4</th>
+  <th>Almost Certain – 5</th>
+ </tr>
+ <tr class="risk_dets">
+  <td>How often is it likely that this hazard will lead to an event of the suggested severity?</td>
+  <td>Will probably never happen / recur</td>
+  <td>Unlikely to happen / recur, but it is possible it may do so</td>
+  <td>Will possibly happen or recur occasionally</td>
+  <td>Is likely to happen / recur persistently</td>
+  <td>Will undoubtedly happen/recur, possibly frequently</td>
+ </tr>
+ <tr class="breaker"><td colspan=6> </td></tr>
+ <tr class="noBorder">
+  <th colspan=6>Risk Matrix</th>
+ </tr>
+ <tr class="cons_dets">
+  <td></td>
+  <th>Negligible – 1</th>
+  <th>Minor – 2</th>
+  <th>Moderate – 3</th>
+  <th>Major – 4</th>
+  <th>Catastrophic – 5</th>
+ </tr>
+ <tr>
+  <th class="risk_dets">Almost Certain - 5</th>
+  <td class="tdv">5</td>
+  <td class="tdv">10</td>
+  <td class="tdv">15</td>
+  <td class="tdv">20</td>
+  <td class="tdv">25</td>
+ </tr>
+ <tr>
+  <th class="risk_dets">Likely – 4</th>
+  <td class="tdv">4</td>
+  <td class="tdv">8</td>
+  <td class="tdv">12</td>
+  <td class="tdv">16</td>
+  <td class="tdv">20</td>
+ </tr>
+ <tr>
+  <th class="risk_dets">Possible – 3</th>
+  <td class="tdv">3</td>
+  <td class="tdv">6</td>
+  <td class="tdv">9</td>
+  <td class="tdv">12</td>
+  <td class="tdv">15</td>
+ </tr>
+ <tr>
+  <th class="risk_dets">Unlikely – 2</th>
+  <td class="tdv">2</td>
+  <td class="tdv">4</td>
+  <td class="tdv">6</td>
+  <td class="tdv">8</td>
+  <td class="tdv">10</td>
+ </tr>
+ <tr>
+  <th class="risk_dets">Rare – 1</th>
+  <td class="tdv">1</td>
+  <td class="tdv">2</td>
+  <td class="tdv">3</td>
+  <td class="tdv">4</td>
+  <td class="tdv">5</td>
+ </tr>
+  <tr class="breaker"><td colspan=6> </td></tr>
+ <tr class='noBorder'>
+  <th colspan=6>Risk Classes</th>
+ </tr>
+ <tr>
+  <th>Term</th>
+  <th colspan=5>Description</th>
+ </tr>
+ <tr>
+  <td class="green">Green</td>
+  <td colspan=5 class="font-md">Tolerable (Low, very low)</td>
+ </tr>
+ <tr>
+  <td class="yellow">Yellow</td>
+  <td colspan=5 class="font-md">Moderate risk, Tolerable if it can be shown to be ALARP (As Low As Reasonably
+  Practicable) (Moderate)</td>
+  </tr>
+ <tr>
+  <td class="amber">Amber</td>
+  <td colspan=5 class="font-md">Undesirable but may be Tolerable if it can be shown to be ALARP (As Low As
+  Reasonably Practicable) (High)</td>
+  </tr>
+ <tr>
+  <td class="red">Red</td>
+  <td colspan=5 class="font-md">Intolerable risk (Very High)</td>
+ </tr>
+ 
+ </table>
+ 
+ 
+ </main>
+ </div>
+ 
+ </div>
+ 
+ 
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+
+$(document).ready(function() {
+    console.log( "ready!" );    
+		
+	$(".tdv").each(function( index, element ){ 
+
+		var tdvalue = parseInt($(this).text());
+		var setclass = 'red';
+		if (tdvalue < 7) {
+			setclass = 'green';
+		}
+		else if (tdvalue < 11) {
+			setclass = 'yellow';
+		}
+		else if (tdvalue < 16) {
+			setclass = 'amber';
+		}
+		else if (tdvalue > 15) {
+			setclass = 'red';
+		}
+					
+		$(this).attr('class', setclass);
+		
+	})
+	
+});
+	
+
+</script>
+
+</body>
+</html>

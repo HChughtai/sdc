@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ <link rel="stylesheet" 
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous"> 
+
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+ 
+<style>
+  .moscowsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
+  .conseqsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
+  .reqsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
+  .hazsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:10px; }
+  .mitsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:10px; }
+  .form-control {
+  padding-right: 30px;
+}
+
+.form-group, .haz {
+	margin-left:20px;
+	
+}
+
+.form-group, .mit {
+	margin-left:20px;
+	
+}
+
+.form-control + .glyphicon {
+  position: absolute;
+  right: 0;
+  padding: 8px 27px;
+  z-index:99;
+}
+
+.glyphicon-remove{
+  position: absolute;
+  right: 0;
+  padding: 8px 5px;
+  z-index:99;
+}
+
+
+
+.form-control + .dropdown{
+  position: absolute;
+  right: 0;
+  padding: 0px 40px;
+  z-index:99;
+}
+
+.dropdown.show {
+  display: inline !important;
+}
+
+.form-group {
+margin-top:10px
+}
+
+ .reqitem {background-color:#CCFFCC}
+ .hazitem {background-color:#CCCCFF}
+ .mititem {background-color:#FFCC99}
+ #would {background-color:#FFCCCC} 
+ 
+</style>
+
+<script>
+
+function addlisteners(){
+
+	$(".moscowsort").sortable({
+      connectWith: ".moscowsort",
+	  stop: function(event, ui) {
+	  ui.item.attr("placeholder", "droppped");
+      var myli = ui.item;
+	  var myinput = $(myli).find( "input" );
+	  var litype = $(myli).parent().parent().attr("id");
+	  $(myinput).attr( "placeholder", litype + " have..." );
+    }
+	  
+	  
+    });
+    $(".moscowsort").disableSelection();
+	$(".glyphicon-remove").click(function () {
+		$(this).parent().parent().remove();
+		
+	});
+	
+	$("#myhazardbutton").off().on("click", function () {
+		addcomponent("haz", $(this).parent().parent().attr("id"));
+	});
+	
+	$(".req").off().on("click", function () {
+	    alert($(this).parent().attr("id"));
+		addcomponent('haz', 'new hazard', $(this).parent().attr("id"));
+	});
+	
+	$(".haz").off().on("click", function () {
+	    alert($(this).parent().attr("id"));
+		addcomponent('mit', 'new mitigation', $(this).parent().attr("id"));
+	});
+
+}
+
+function addinput(category) 
+{
+
+newinput = document.createElement("input");
+$(newinput).attr('type', 'text');
+$(newinput).attr('class', 'form-control ' + category);
+$(newinput).attr('placeholder', category + ' have...');
+$("#"+category).append(newinput);
+
+}
+
+function addcomponent(category, text, id)
+{
+
+	console.log("adding component");
+	var newcomponent;
+	switch(category) {
+		case "haz":
+			newliclass = "hazitem";
+			newcomponent = buildli(id, category, text, true, true, 'Add Mitigation', 'mit');
+			$("#" + id+ "_haz_sortable").append(newcomponent);
+			// code block
+			break;
+		case "mit":
+			newliclass = "mititem";
+			newcomponent = buildli(id, category, text, true, false);
+			$("#" + id).append(newcomponent);
+			// code block
+			break;
+		case "req":
+			newliclass = "requitem";
+			newcomponent = buildli(id, category, text, false, true, 'Add Hazard', 'haz', true, "Hazards");
+			newcomponentid = $(newcomponent).attr("id");
+			newhazponent = buildli(newcomponentid, "haz", "New Hazard", true, true, 'Add Mitigation', 'mit', true, "Mitigations");
+			newhazponentid = $(newhazponent).attr("id");
+			newmitponent = buildli(newhazponentid, "mit", "New Mitigation", true, false); 
+			$(newhazponent).find(".mit").append(newmitponent);
+			$(newcomponent).find(".haz").append(newhazponent);
+			$("#"+category + "sortable").append(newcomponent);
+			
+		default:
+			// code block
+	} 
+	
+	
+	addlisteners();
+
+}
+
+function buildli(id, category, text, adddropdown, addbutton, buttontext, childcategory, addsublist, sublistname)
+{
+
+	console.log($("#"+id).children("."+childcategory).length); 
+
+
+	newli = document.createElement("li");
+	newliclass = category + "item";
+	newliid = "id_" + category + "_" + id;
+	$(newli).attr("id", newliid);
+	$(newli).attr("class", newliclass);
+
+	newgroupdiv = document.createElement("div");
+	$(newgroupdiv).attr('class', 'input-group');
+	
+	newinput = document.createElement("input");
+	$(newinput).attr('type', 'text');
+	$(newinput).attr('class', 'form-control');
+	$(newinput).val(text);
+	
+	$(newgroupdiv).append(newinput);
+		
+	if (adddropdown) {
+		newdropdownspan = document.createElement("span");
+		newdropdownbutton = document.createElement("button");
+		newdropdowndiv = document.createElement("div");
+	
+		$(newdropdownspan).attr("class", "dropdown");
+	
+		$(newdropdownbutton).attr("class", "btn btn-secondary dropdown-toggle");
+		$(newdropdownbutton).attr("type", "button");
+		$(newdropdownbutton).attr("data-toggle", "dropdown");
+		$(newdropdownbutton).attr("aria-haspopup", "true");
+		$(newdropdownbutton).attr("aria-expanded", "false");
+		$(newdropdownbutton).text("Hazard Level");
+	
+		$(newdropdowndiv).attr("class", "dropdown-menu");
+		$(newdropdowndiv).attr("aria-labelledby", "dropdownMenuButton");
+	
+		dropdownlist = ["Catastrophic", "Major", "Moderate", "Minor", "Negligible"];
+	
+		for (index = 0; index < dropdownlist.length; ++index) {
+			newdropdownitem = document.createElement("a");
+			$(newdropdownitem).attr("class", "dropdown-item");
+			$(newdropdownitem).attr("href", "#");
+			$(newdropdownitem).text(dropdownlist[index]);
+			console.log(dropdownlist[index]);
+			$(newdropdowndiv).append(newdropdownitem);
+		}
+	
+		$(newdropdownspan).append(newdropdownbutton);
+		$(newdropdownspan).append(newdropdowndiv);
+		$(newgroupdiv).append(newdropdownspan);
+	}
+
+	newremovespan = document.createElement("span");
+	$(newremovespan).attr('class', 'glyphicon glyphicon-remove');
+
+	$(newgroupdiv).append(newremovespan);
+
+	$(newli).append(newgroupdiv);
+
+	if (addsublist) {
+		subdiv = document.createElement("div")
+		$(subdiv).attr("class", "form-group " + childcategory);
+		$(subdiv).attr("id", newliid + "_" + childcategory);
+		
+		subdivlist = document.createElement("ul");
+		subdivlistid = newliid + "_" + childcategory + "_sortable";
+		$(subdivlist).attr("id", subdivlistid);
+		$(subdivlist).attr("class", childcategory + "sort");
+				
+		subdivlistlabel = document.createElement("label");
+		$(subdivlistlabel).attr("for", subdivlistlabel);
+		$(subdivlistlabel).text(sublistname);
+			
+		$(subdiv).append(subdivlistlabel);
+		$(subdiv).append(subdivlist);
+		$(newli).append(subdiv);
+	}
+
+	if (addbutton) {
+	
+		newbutton = document.createElement("input");
+		$(newbutton).attr("type", "button");
+		$(newbutton).attr("value", buttontext);
+		$(newbutton).attr("class", "btn-primary " + category);
+		$(newli).append(newbutton);
+	}
+
+
+	return newli;
+
+}
+
+function addli(category, text) 
+{
+newli = document.createElement("li");
+newliclass = "hazitem";
+switch(category) {
+  case "haz":
+	newliclass = "hazitem";
+    // code block
+    break;
+  case "mit":
+	newliclass = "mititem";
+    // code block
+    break;
+  default:
+    // code block
+} 
+
+
+	$(newli).attr("class", newliclass);
+
+	newgroupdiv = document.createElement("div");
+	newremovespan = document.createElement("span");
+	
+	newdropdownspan = document.createElement("span");
+	newdropdownbutton = document.createElement("button");
+	newdropdowndiv = document.createElement("div");
+	
+	$(newdropdownspan).attr("class", "dropdown");
+	
+	$(newdropdownbutton).attr("class", "btn btn-secondary dropdown-toggle");
+	$(newdropdownbutton).attr("type", "button");
+	$(newdropdownbutton).attr("data-toggle", "dropdown");
+	$(newdropdownbutton).attr("aria-haspopup", "true");
+	$(newdropdownbutton).attr("aria-expanded", "false");
+	$(newdropdownbutton).text("Hazard Level");
+	
+	$(newdropdowndiv).attr("class", "dropdown-menu");
+	$(newdropdowndiv).attr("aria-labelledby", "dropdownMenuButton");
+	
+	dropdownlist = ["Catastrophic", "Major", "Moderate", "Minor", "Negligible"];
+	
+	for (index = 0; index < dropdownlist.length; ++index) {
+		newdropdownitem = document.createElement("a");
+		$(newdropdownitem).attr("class", "dropdown-item");
+		$(newdropdownitem).attr("href", "#");
+		$(newdropdownitem).text(dropdownlist[index]);
+		console.log(dropdownlist[index]);
+		$(newdropdowndiv).append(newdropdownitem);
+	}
+	
+	$(newdropdownspan).append(newdropdownbutton);
+	$(newdropdownspan).append(newdropdowndiv);
+
+	$(newgroupdiv).attr('class', 'input-group');
+	$(newremovespan).attr('class', 'glyphicon glyphicon-remove');
+
+	newinput = document.createElement("input");
+	$(newinput).attr('type', 'text');
+	$(newinput).attr('class', 'form-control');
+	$(newinput).attr('placeholder', 'Mitigation');
+	$(newinput).val(text);
+	$(newgroupdiv).append(newinput);
+	$(newgroupdiv).append(newdropdownspan);
+	$(newgroupdiv).append(newremovespan);
+	$(newli).append(newgroupdiv);
+
+$("#"+category + "sortable").append(newli);
+addlisteners();
+}
+
+
+function savejson(){
+
+jsonObj = [];
+
+$(".form-control").each(function( index, element ){ 
+
+	var type = $(this).parent().parent().parent().parent().attr('id');
+	item = {}
+	item ["id"] = index;
+    item ["type"] = type;
+    item ["value"] = $(this).val();
+	jsonObj.push(item);
+	
+})
+
+	var text = JSON.stringify(jsonObj);
+	download("testfile.txt", text);
+console.log(jsonObj);
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
+function loadFileAsText(){
+  var fileToLoad = document.getElementById("moscfileToLoad").files[0];
+
+  var fileReader = new FileReader();
+  fileReader.onload = function(fileLoadedEvent){
+      var textFromFileLoaded = fileLoadedEvent.target.result;
+      processJSONmoscow(textFromFileLoaded);
+  };
+
+  fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+function processJSONmoscow(texttoprocess){
+
+	$(".moscowitem").remove();
+	moscowJSON = JSON.parse(texttoprocess);
+	
+	for (x in moscowJSON) {
+	
+ if (x == 0) {
+  $("#projecttitle").val(moscowJSON[x]["value"]);
+ }
+ else {
+   
+  type = "req"; //moscowJSON[x]["type"];
+  
+  value = moscowJSON[x]["value"];
+  console.log(value);
+  id = moscowJSON[x]["id"];
+  addcomponent(type, value, id);
+  }
+} 
+
+
+}
+
+
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="row justify-content-md-center">
+
+<h1>Hazard Form</h1>
+
+
+
+<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+<table class="table">
+<tr>
+    <td>Select an existing MoSCoW json file to load:</td>
+    <td><input type="file" id="moscfileToLoad"></td>
+</tr>
+
+<tr>
+    <td>Select an existing User Story json file to load:</td>
+    <td><input type="file" id="ustoryfileToLoad"></td>
+</tr>
+
+</table>
+<div style="float:right">
+<input  type="button" class="btn-info" onclick="loadFileAsText()" value="Load Selected File"/>
+</div>
+<div style="clear:both"></div>
+
+<div class="form-group" style="margin-top:30px; margin-bottom:30px">
+
+<div class="input-group"><label for="projecttitle">Project: </label><input class="form-control" id="projecttitle" type="text" placeholder="project title goes here..."/></div
+</div>
+
+<div class="form-group" id="consequences">
+	<label for="conseqsortable">Project Default Hazard Level</label>
+	<ul class="conseqsort" id="conseqsortable">
+    <li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Catastrophic" readonly></div></li>
+	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Major" readonly></div></li>
+	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Moderate" readonly></div></li>
+	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Minor" readonly></div></li>
+	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Negligible" readonly></div></li>
+	
+	</ul>
+</div>
+
+<div class="form-group" id="requirements>
+
+    <label for="reqsortable">Requirements</label>
+	<ul class="reqsort" id="reqsortable">
+    <li class="reqitem" id="req_0">
+	<div class="input-group">
+		<input type="text" class="form-control req"  readonly">
+	</div>
+	<div class="form-group haz" id="hazards">
+
+		<label for="hazsortable">Hazards</label>
+		<ul class="hazsort" id="hazsortable">
+			<li class="hazitem" id="haz_1_1">
+				<div class="input-group">
+					<input type="text" class="form-control" value="Requirement 1" readonly>
+					<span class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Hazard Level
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#">Catastrophic</a>
+							<a class="dropdown-item" href="#">Major</a>
+							<a class="dropdown-item" href="#">Moderate</a>
+							<a class="dropdown-item" href="#">Minor</a>
+							<a class="dropdown-item" href="#">Negligible</a>
+						</div>
+					</span>
+					<span class="glyphicon glyphicon-remove"></span>
+				</div>
+				<div class="form-group mit" id="mitigations">
+
+					<label for="mitsortable">Mitigations</label>
+					<ul class="mitsort" id="mitsortable">
+						<li class="mititem">
+							<div class="input-group">
+								<input type="text" class="form-control" value="Mitigation">
+								<span class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Hazard Level
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<a class="dropdown-item" href="#">Catastrophic</a>
+										<a class="dropdown-item" href="#">Major</a>
+										<a class="dropdown-item" href="#">Moderate</a>
+										<a class="dropdown-item" href="#">Minor</a>
+										<a class="dropdown-item" href="#">Negligible</a>
+									</div>
+								</span>
+								<span class="glyphicon glyphicon-remove"></span>
+							</div>
+						</li>
+					</ul>
+					<input type="button" value="Add Mitigation" class="btn-primary" onclick="addli('mit')"/>
+				</div>
+			</li>
+		</ul>
+
+		
+		
+		
+		<input type="button" id="myhazardbutton" value="Add Hazard" class="btn-primary" />
+	</div>
+	</li>
+	</ul>
+</div>
+
+	<input type="button" value="Add Requirement" class="btn-primary" onclick="addli('req')"/>
+
+
+
+
+
+	
+ 
+ <div class="form=group" >
+ <div style="float:right">
+<input type="button" class="btn-success" value="Save Form" onclick="savejson()"/>
+</div>
+</div>
+ 
+ 
+</main> 
+</div>
+
+
+  </div>
+
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+
+$(document).ready(function() {
+    console.log( "ready!" );    
+	addlisteners();
+	
+
+});
+	
+
+</script>
+
+</body>
+</html>
