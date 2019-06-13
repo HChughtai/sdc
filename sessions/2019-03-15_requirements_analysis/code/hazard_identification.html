@@ -9,7 +9,7 @@ integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw
 crossorigin="anonymous"> 
 
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
- 
+
 <style>
   .moscowsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
   .conseqsort { list-style-type: none; margin: 0; padding: 0; width: 100%; min-height:50px; }
@@ -70,7 +70,7 @@ crossorigin="anonymous">
 margin-top:10px
 }
 
- .reqitem {background-color:#CCFFCC}
+ .reqitem {background-color:#CCFFCC; padding:5px}
  
  .hazitem {background-color:#CCCCFF}
  
@@ -92,8 +92,7 @@ function addlisteners(){
 	  var litype = $(myli).parent().parent().attr("id");
 	  $(myinput).attr( "placeholder", litype + " have..." );
     }
-	  
-	  
+	  	  
     });
     $(".moscowsort").disableSelection();
 	$(".glyphicon-remove").click(function () {
@@ -114,7 +113,14 @@ function addlisteners(){
 	    alert($(this).parent().attr("id"));
 		addcomponent('mit', 'new mitigation', $(this).parent().attr("id"));
 	});
+	
+	$('.next_link').off().on("click", function () {
+		$("#req_links .active").parent().next('.req_nav_item').find('a').trigger('click');
+	});
 
+	$('.previous_link').off().on("click", function () {
+		$("#req_links .active").parent().prev('.req_nav_item').find('a').trigger('click');
+	});
 }
 
 function addinput(category) 
@@ -147,21 +153,19 @@ function addcomponent(category, text, id)
 			// code block
 			break;
 		case "req":
-			newliclass = "requitem";
-			newcomponent = buildli(id, category, text, false, true, 'Add Hazard', 'haz', true, "Hazards");
-			newcomponentid = $(newcomponent).attr("id");
-			newhazponent = buildli(newcomponentid, "haz", "New Hazard", true, true, 'Add Mitigation', 'mit', true, "Mitigations");
+			newpagelink = addpagelink(id);
+			$(".next_link").before(newpagelink);
+			reqdiv = buildpagediv(id, category, text, false, true, 'Add Hazard', 'haz', true, "Hazards");
+			newpageid = $(reqdiv).attr("id");
+			newhazponent = buildli(newpageid, "haz", "New Hazard", true, true, 'Add Mitigation', 'mit', true, "Mitigations");
 			newhazponentid = $(newhazponent).attr("id");
-			//newmitponent = buildli(newhazponentid, "mit", "New Mitigation", true, false, "", "", true, ""); 
-			//$(newhazponent).find(".mit").append(newmitponent);
-			$(newcomponent).find(".hazsort").append(newhazponent);
-			$("#"+category + "sortable").append(newcomponent);
+			//$(reqdiv).find(".hazsort").append(newhazponent);
+			$(".tab-content").append(reqdiv);
 			
 		default:
 			// code block
 	} 
-	
-	
+		
 	addlisteners();
 
 }
@@ -270,8 +274,143 @@ function buildli(id, category, text, adddropdown, addbutton, buttontext, childca
 		$(newli).append(newbutton);
 	}
 
-
 	return newli;
+
+}
+
+function addpagelink(req_no)
+{
+	newli = document.createElement("li");
+		
+	newliclass = "nav-item req_nav_item";
+	
+	newliid = "req_item_" + req_no;
+	$(newli).attr("id", newliid);
+	
+	$(newli).attr("class", newliclass);
+	
+	newlink = document.createElement("a");
+	newlinkclass = "nav-link";
+	
+	newlinkid = "req_link_" + req_no;
+	$(newlink).attr("id", newlinkid);
+	
+	if (req_no == 1) {
+	
+		newlinkclass = "nav-link active";
+	}
+	
+	newlinkhref = "#req_" + req_no;
+	$(newlink).attr("class", newlinkclass);
+	$(newlink).attr("href", newlinkhref);
+	$(newlink).text(req_no);
+	$(newlink).attr("data-toggle", "tab");
+	
+	$(newli).append(newlink);
+	
+	return newli;
+
+}
+
+function buildpagediv(req_no, category, text, adddropdown, addbutton, buttontext, childcategory, addsublist, sublistname) {
+
+	mitigationno = $(".mititem").length; 
+	hazardno = $(".hazitem").length; 
+	console.log("mitigation no = " + mitigationno);
+	console.log("hazard no = " + hazardno);
+	countno = 0;
+	childcountno = hazardno;
+		
+	newpagediv = document.createElement("div");
+	newpageclass = "tab-pane reqitem";
+	if (req_no == 1) {
+	
+		newpageclass = "tab-pane active reqitem";
+	}
+	
+	newpageid = "req_" + req_no;
+	$(newpagediv).attr("id", newpageid);
+	$(newpagediv).attr("class", newpageclass);
+
+	newgroupdiv = document.createElement("div");
+	$(newgroupdiv).attr('class', 'input-group');
+	
+	newinput = document.createElement("input");
+	$(newinput).attr('type', 'text');
+	$(newinput).attr('class', 'form-control');
+	$(newinput).attr('readonly', 'true');
+	
+	$(newinput).val(text);
+	
+	$(newgroupdiv).append(newinput);
+		
+	if (adddropdown) {
+		newdropdownspan = document.createElement("span");
+		newdropdownbutton = document.createElement("button");
+		newdropdowndiv = document.createElement("div");
+	
+		$(newdropdownspan).attr("class", "dropdown");
+	
+		$(newdropdownbutton).attr("class", "btn btn-secondary dropdown-toggle");
+		$(newdropdownbutton).attr("type", "button");
+		$(newdropdownbutton).attr("data-toggle", "dropdown");
+		$(newdropdownbutton).attr("aria-haspopup", "true");
+		$(newdropdownbutton).attr("aria-expanded", "false");
+		$(newdropdownbutton).text("Hazard Level");
+	
+		$(newdropdowndiv).attr("class", "dropdown-menu");
+		$(newdropdowndiv).attr("aria-labelledby", "dropdownMenuButton");
+	
+		dropdownlist = ["Catastrophic", "Major", "Moderate", "Minor", "Negligible"];
+	
+		for (index = 0; index < dropdownlist.length; ++index) {
+			newdropdownitem = document.createElement("a");
+			$(newdropdownitem).attr("class", "dropdown-item");
+			$(newdropdownitem).attr("href", "#");
+			$(newdropdownitem).text(dropdownlist[index]);
+			console.log(dropdownlist[index]);
+			$(newdropdowndiv).append(newdropdownitem);
+		}
+	
+		$(newdropdownspan).append(newdropdownbutton);
+		$(newdropdownspan).append(newdropdowndiv);
+		$(newgroupdiv).append(newdropdownspan);
+	}
+
+	$(newpagediv).append(newgroupdiv);
+
+	if (addsublist) {
+		subdiv = document.createElement("div")
+		$(subdiv).attr("class", "form-group " + childcategory);
+		$(subdiv).attr("id", newpageid + "_" + childcategory);
+		
+		subdivlist = document.createElement("ul");
+		subdivlistid = newpageid + "_" + childcategory + "_sortable";
+		$(subdivlist).attr("id", subdivlistid);
+		$(subdivlist).attr("class", childcategory + "sort " + childcategory);
+				
+		subdivlistlabel = document.createElement("label");
+		$(subdivlistlabel).attr("for", subdivlistlabel);
+		$(subdivlistlabel).text(sublistname);
+			
+		$(subdiv).append(subdivlistlabel);
+		$(subdiv).append(subdivlist);
+		$(newpagediv).append(subdiv);
+	}
+
+	if (addbutton) {
+	
+		newbutton = document.createElement("input");
+		$(newbutton).attr("type", "button");
+		$(newbutton).attr("value", buttontext);
+		$(newbutton).attr("class", "btn-primary " + category);
+		$(newpagediv).append(newbutton);
+	}
+
+
+	return newpagediv;
+
+
 
 }
 
@@ -414,7 +553,7 @@ function processJSONmoscow(texttoprocess){
   }
 } 
 
-
+	
 }
 
 
@@ -423,6 +562,9 @@ function processJSONmoscow(texttoprocess){
 </head>
 
 <body>
+
+
+
 
 <div class="container">
 
@@ -452,40 +594,14 @@ function processJSONmoscow(texttoprocess){
 
 <div class="form-group" style="margin-top:30px; margin-bottom:30px">
 
-<div class="input-group"><label for="projecttitle">Project: </label><input class="form-control" id="projecttitle" type="text" placeholder="project title goes here..."/></div
-</div>
-
-<div class="form-group" id="consequences">
-	<label for="conseqsortable">Project Default Hazard Level</label>
-	<ul class="conseqsort" id="conseqsortable">
-    <li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Catastrophic" readonly></div></li>
-	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Major" readonly></div></li>
-	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Moderate" readonly></div></li>
-	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Minor" readonly></div></li>
-	<li class="conseqitem"><div class="input-group"><input type="text" class="form-control cons"  value="Negligible" readonly></div></li>
-	
-	</ul>
-</div>
-
-<div class="form-group" id="requirements>
-
-    <label for="reqsortable">Requirements</label>
-	<ul class="reqsort" id="reqsortable">
-    <li class="page-item" id="req_0">
-	
-	<div class="input-group">
-		<input type="text" class="form-control req"  readonly">
-	</div>
-	<div class="form-group haz" id="hazards">
-
-		<label for="hazsortable">Hazards</label>
-		<ul class="hazsort" id="hazsortable">
-			<li class="hazitem" id="haz_1_1">
-				<div class="input-group">
-					<input type="text" class="form-control" value="Requirement 1" readonly>
+<div class="input-group">
+	<label for="projecttitle">Project: </label>
+		<input class="form-control" id="projecttitle" type="text" readonly="true" placeholder="project title goes here..."/>
 					<span class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Hazard Level
+						<button class="btn btn-secondary dropdown-toggle" type="button" 
+								id="dropdownMenuButton" data-toggle="dropdown" 
+								aria-haspopup="true" aria-expanded="false">
+							Project Hazard Level
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<a class="dropdown-item" href="#">Catastrophic</a>
@@ -495,52 +611,26 @@ function processJSONmoscow(texttoprocess){
 							<a class="dropdown-item" href="#">Negligible</a>
 						</div>
 					</span>
-					<span class="glyphicon glyphicon-remove"></span>
 				</div>
-				<div class="form-group mit" id="mitigations">
 
-					<label for="mitsortable">Mitigations</label>
-					<ul class="mitsort" id="mitsortable">
-						<li class="mititem">
-							<div class="input-group">
-								<input type="text" class="form-control" value="Mitigation">
-								<span class="dropdown">
-									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										Hazard Level
-									</button>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-										<a class="dropdown-item" href="#">Catastrophic</a>
-										<a class="dropdown-item" href="#">Major</a>
-										<a class="dropdown-item" href="#">Moderate</a>
-										<a class="dropdown-item" href="#">Minor</a>
-										<a class="dropdown-item" href="#">Negligible</a>
-									</div>
-								</span>
-								<span class="glyphicon glyphicon-remove"></span>
-							</div>
-						</li>
-					</ul>
-					<input type="button" value="Add Mitigation" class="btn-primary" onclick="addli('mit')"/>
-				</div>
-			</li>
-		</ul>
-
-		
-		
-		
-		<input type="button" id="myhazardbutton" value="Add Hazard" class="btn-primary" />
-	</div>
-	</li>
-	</ul>
 </div>
 
-	<input type="button" value="Add Requirement" class="btn-primary" onclick="addli('req')"/>
-
-
-
-
-
+<div class="form-group" id="requirements>
+<div class="container">
+<label for="requirements">Requirements</label>
+	<nav aria-label="Page navigation example">
+		<ul class="nav nav-pills small" id="req_links">			
+		    <li class="page-item previous_link"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+			<li class="page-item next_link"><a class="page-link" href="#" tabindex="-1">Next</a></li>
+			
+		</ul>
+	</nav>
 	
+	<div class="tab-content">
+	</div>
+</div>
+    	    
+</div>
  
  <div class="form=group" >
  <div style="float:right">
@@ -558,7 +648,9 @@ function processJSONmoscow(texttoprocess){
       <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
       <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
 <script>
 
 $(document).ready(function() {
